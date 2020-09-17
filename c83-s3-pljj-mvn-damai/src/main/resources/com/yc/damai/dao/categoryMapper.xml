@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <!-- namespace是当前接口的命名空间 -->
+<mapper namespace="com.yc.damai.dao.DmCategoryMapper">
+<resultMap type="com.yc.damai.po.DmCategory" id="rmdc">
+  <collection property="chrildren" column="id"
+  select="selectChildren" fetchType="lazy">
+  </collection>
+</resultMap>
+<!-- id是该select标签的唯一标识  resultType标识的返回结果映射的实体类的类型 -->
+  <select id="selectAll" resultMap="rmdc">
+    select * from dm_category;
+  </select>
+  
+   <select id="selectChildren" resultType="com.yc.damai.po.DmCategory">
+    select * from dm_category where pid=#{id};
+  </select>
+  <!-- 新增不返回结果集 没有resultType -->
+  <!-- 参数传入格式: #{实体对象的属性名}-->
+  <insert id="insert">
+    insert into dm_category values(null,#{cname},#{pid})
+  </insert>
+  <update id="update">
+     update dm_category set cname=#{cname},pid=#{pid} where id=#{id}
+  </update>
+  <delete id="delete">
+    delete from dm_category where id=#{id}
+  </delete> 
+</mapper>

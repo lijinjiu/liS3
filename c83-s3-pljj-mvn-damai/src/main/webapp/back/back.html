@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>管理后台系统</title>
+<link rel="stylesheet" type="text/css" href="easyUI/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="easyUI/themes/icon.css">
+<script type="text/javascript" src="easyUI/jquery.min.js"></script>
+<script type="text/javascript" src="easyUI/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="easyUI/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript">
+		var data = [{
+	        text: 'Item1',
+	        iconCls: 'icon-sum',
+	        state: 'open',
+	        children: [{
+	            text: '商品管理',
+	            url:'product.html'
+	        },{
+	            text: '订单管理',
+	            url:'order.html'
+	        },{
+	        	 text: '分类管理',
+	            children: [{
+	                text: '女装男装',
+	                url:'../0606/calender.html'
+	            },{
+	                text: '鞋靴包箱',
+	                url:'../0604/modifiy.html'
+	            }]
+	        }]
+	    },{
+	        text: 'Item2',
+	        iconCls: 'icon-more',
+	        children: [{
+	            text: 'Option4'
+	        },{
+	            text: 'Option5'
+	        },{
+	            text: 'Option6'
+	        }]
+	    }];
+ function selectMenu(item){
+		if($('#tt').tabs('exists',item.text)){
+			 $('#tt').tabs('select',item.text)
+		}else{
+			 $('#tt').tabs('add',{
+					title: item.text,
+					selected: true,
+				//	content:"<h1>图书管理<h1>"
+				 // href:"../0606/Books.html"  ---一个id对应多个控件会出问题
+					//iframe 嵌入子标签页
+				 content:"<iframe src='"+item.url+"' "
+				 +"style='width:100%;height:100%;border:0px'></iframe>"
+				});
+		}
+ }
+</script>
+</head>
+<body>
+	<div class="easyui-layout" fit="true">
+		<div data-options="region:'north'" style="height: 50px">
+		<img src="../imges/back.jpg" width="100%"></img>
+		</div>
+		<div data-options="region:'south',split:true" style="height: 50px;"></div>
+		<div class="easyui-accordion" data-options="region:'west',split:true"
+			title="菜单区" style="width: 200px;">
+			<div id='sm' class="easyui-sidemenu" title="后台数据管理"
+				data-options="iconCls:'icon-ok',
+			    data:data,fit:true,
+			    onSelect:selectMenu"
+				style="overflow: auto; padding: 10px;"></div>
+			<div title="物流信息查询" data-options="iconCls:'icon-help'"
+				style="padding: 10px;"></div>
+			<div title="财务报表" data-options="iconCls:'icon-search'"
+				style="padding: 10px;"></div>
+		</div>
+		<div id="tt" class="easyui-tabs"
+			data-options="region:'center',title:'功能区',iconCls:'icon-ok'">
+			
+		</div>
+</body>
+</html>

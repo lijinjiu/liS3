@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>订单管理</title>
+	<link rel="stylesheet" type="text/css" href="easyUI/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="easyUI/themes/icon.css">
+	<script type="text/javascript" src="easyUI/jquery.min.js"></script>
+	<script type="text/javascript" src="easyUI/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="easyUI/locale/easyui-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="../js/axios.min.js"></script>
+<style type="text/css">
+input{
+width:200px
+}
+</style>
+<script type="text/javascript">
+//图片字段的格式化方法
+function fmtImg(value,row,index){
+	if(value.indexOf("/")!=0){
+		return "<img height='100px' src='../"+value+"'>";
+	}else{
+		return "<img height='100px' src='"+value+"'>";
+	}
+}
+
+//出版时间字段格式化方法
+function fmtDate(date){
+	var y=date.getFullYear();
+	var m=date.getMonth()+1;
+	var d=date.getDate();
+	return y+"-"+m+"-"+d;
+}
+
+ function query(){
+	 $('#dg').datagrid('load', {
+		  /*  uid:$("#uid").textbox('getValue'),
+		   aid:$("#aid").textbox('getValue'), */
+		   state:$("#state").textbox('getValue'),
+		});
+ }
+ //操作字段的格式化方法
+ function fmtOp(value,row,index){
+		return "<button onclick='edit("+index+")'>修改</button>";
+	}
+ 
+ function fmtDl(value,row,index){
+		return "<button onclick='del("+index+")'>删除</button>";
+	} 
+ 
+ function del(index){
+	 var rows=$('#dg').datagrid("getRows");
+	 if(index!=undefined){
+		 rows[index].id=rows[index].id;
+		 alert(rows[index].id);
+		 var id=rows[index].id;
+		 url="../orders.do?op=del";
+	     axios.post(url,id).then(res=>{
+	    	 alert(res.msg);
+	     }); 
+	 }
+	 
+ }
+ //打开修改的窗口
+ function edit(index){
+	 $("#dd").dialog('open');
+	 //index有值就是修改表格中的某一个行记录 否则是新增
+	 if(index!=undefined){
+		 var rows=$('#dg').datagrid("getRows");
+		 $('#ff').form('load',rows[index]);
+	 }else{
+		 $('#ff').form('clear');  //easyUI保存之后窗口是隐藏了 需要清空
+	 }
+	 
+ }
+ 
+ function save(){
+	 //easyUI的表单的ajax提交方式
+	 $('#ff').form('submit',{
+		 url:"../orders.do",
+	     onSubmit:function(param){
+	    	 //扩展请求参数
+	    	 param.op="save";
+	     },
+		 success:res=>{
+			 
+				 $("#dd").dialog('close');
+				 //刷新表格
+				 $('#dg').datagrid("reload");
+			 
+		 }
+	 });
+ }
+ function upload(newValue,oldValue){
+	 var url="../UploadServlet";
+	 var fd=new FormData(ff);
+	 axios.post(url,fd).then(res=>{
+		 alert(res.data.msg);
+		 if(res.data.data.indexOf("/")!=0){
+			 //upImg是原生的html 控件对象
+			 upImg.src="../"+res.data.data;     //axois----res.data   result---data
+		 }else{
+			 upImg.src=res.data.data; 
+		 }
+		 //tbImg是easyUI的控件对象
+		 $("#tbImg").textbox('setValue',res.data.data);
+	 });
+ }
+ 
+ 
+ 
+</script>
+</head>
+<body>
+	<div class="easyui-layout" data-options="fit:true">
+		<div data-options="region:'north'" style="height:50px">
+		<!-- <input class="easyui-textbox" label="用户名：" style="width:200px" id="uid">
+        <input class="easyui-textbox" label="地址：" style="width:200px" id="aid"> -->
+        <input class="easyui-textbox" label="状态："  style="width:200px" id="state">
+        <a id="btn" href="#" class="easyui-linkbutton" 
+        data-options="iconCls:'icon-search'"
+         onclick="query()">查询</a>
+         </div>
+		   
+		<div data-options="region:'center',title:'查询结果',iconCls:'icon-ok'">
+			<table class="easyui-datagrid" id="dg"
+					data-options="
+					url:'../orders.do?op=query1',
+					method:'get',
+					border:false,
+					singleSelect:true,
+					fit:true,
+					fitColumns:true,
+					pagination:true">
+				<thead>
+					<tr>
+						<th data-options="field:'id'" width="20">编号</th>
+						<th data-options="field:'name'" width="50">用户</th>
+						<th data-options="field:'total'" width="50">总金额</th>
+						<th data-options="field:'addr'" width="100">地址</th>
+						<th data-options="field:'state'" width="20">支付状态</th>
+						<th data-options="field:'createtime'" width="100">订单时间</th>
+						<th data-options="field:'idd',formatter:fmtOp, align:'center'" width="20">操作</th>
+						<th data-options="field:'iddd',formatter:fmtDl, align:'center'" width="20">删除</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
+	
+ <!-- 图书编辑窗口 -->
+	<div id="dd" class="easyui-dialog" title="My Dialog"
+		style="width: 400px; height: 400px;"
+		data-options="iconCls:'icon-save',
+		resizable:true,
+		modal:true,
+		closed:true,
+		buttons:'#bb'">
+		<form id="ff">
+		<input class="easyui-textbox" name="id" label="编号:"><br>
+		
+		<input class="easyui-textbox" name="name" label="用户:"><br>
+		
+		<input class="easyui-numberbox" name="total" label="总金额:"><br>
+		
+		<input class="easyui-textbox" name="addr" label="地址:"><br>
+		
+		<input class="easyui-textbox" name="state" label="支付状态:"><br>
+		
+		<input class="easyui-textbox" name="createtime" label="订单时间:"><br>
+		
+		</form>
+	</div>
+	
+	<div id="bb">
+	<a href="#" class="easyui-linkbutton" onclick="save()">保存</a>
+	<a href="#" class="easyui-linkbutton">关闭</a>
+</div>
+</body>
+</html>

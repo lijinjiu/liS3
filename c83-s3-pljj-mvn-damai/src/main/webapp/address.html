@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>地址管理</title>
+	<link rel="stylesheet" type="text/css" href="back/easyUI/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="back/easyUI/themes/icon.css">
+	<script type="text/javascript" src="back/easyUI/jquery.min.js"></script>
+	<script type="text/javascript" src="back/easyUI/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="back/easyUI/locale/easyui-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="js/axios.min.js"></script>
+<style type="text/css">
+input{
+width:200px
+}
+</style>
+<script type="text/javascript">
+//图片字段的格式化方法
+function fmtImg(value,row,index){
+	return "<img height='100px' src='../"+value+"'>";
+}
+
+//出版时间字段格式化方法
+function fmtDate(date){
+	var y=date.getFullYear();
+	var m=date.getMonth()+1;
+	var d=date.getDate();
+	return y+"-"+m+"-"+d;
+}
+ //操作字段的格式化方法
+ function fmtOp(value,row,index){
+		return "<button onclick='edit("+index+")'>修改</button>";
+	}
+ 
+ //打开修改的窗口
+ //打开修改的窗口
+ function edit(index){
+	 $("#dd").dialog('open');
+	 //index有值就是修改表格中的某一个行记录 否则是新增
+	 if(index!=undefined){
+		 var rows=$('#dg').datagrid("getRows");
+		 $('#ff').form('load',rows[index]);
+	 }else{
+		 $('#ff').form('clear');  //easyUI保存之后窗口是隐藏了 需要清空
+	 }
+	 
+ }
+ 
+//* /打开修改的窗口
+ function add(){
+ //easyui 的表单提交方式
+	 $("#dd").dialog('open');
+ //新增
+	 $('#ff').form('clear'); 
+ } 
+ 
+ function save(){
+	 $('#ff').form('submit',{
+		 url:"address.do?op=save",
+		 onSubmit:function(param){
+			 //扩展请求参数
+			 param.op="save";
+		 },
+		 success:res=>{
+			 //原有的res==>消息 ，现在的res==>json对象{code,msg.data}
+			 res=JSON.parse(res);
+			 alert(res.msg);
+			 if(res.code==1){
+				//关闭窗口
+				 $("#dd").dialog('close');
+				 //刷新表格
+				 $('#dg').datagrid("reload"); 
+			 }
+		 }
+	 });
+ }
+ 
+ 
+</script>
+</head>
+<body>	
+	<div class="easyui-layout" data-options="fit:true">
+	<div data-options="region:'north'" style="height:50px">
+         <a id="btn" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add',algin:'center'"
+         onclick="add()">添加地址</a>
+         </div>
+		<div data-options="region:'center',title:'查询结果',iconCls:'icon-ok'">
+			<table class="easyui-datagrid" id="dg"
+					data-options="
+					url:'address.do?op=query',
+					method:'get',
+					border:false,
+					singleSelect:true,
+					fit:true,
+					fitColumns:true">
+				<thead>
+					<tr>
+						<th data-options="field:'id', width:20">编号</th>
+						<th data-options="field:'addr', width:150">详细地址</th>
+						<th data-options="field:'phone', width:50">电话</th>
+						<th data-options="field:'name', width:50">联系人姓名</th>
+						<th data-options="field:'dft', width:20">是否为默认地址(1/0)</th>
+						<th data-options="field:'createtime', width:100">生成时间</th>
+						<th data-options="field:'idd',formatter:fmtOp, align:'center', width:20">操作</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
+ 
+ <!-- 图书编辑窗口 -->
+	<div id="dd" class="easyui-dialog" title="新增地址"
+		style="width: 400px; height: 400px;"
+		data-options="iconCls:'icon-save',
+		resizable:true,
+		modal:true,
+		closed:true,
+		buttons:'#bb'">
+		<form id="ff">
+		<table>
+			<tr>
+				<td>编号：</td>
+				<td><input class="easyui-textbox" name="id" ><br></td>
+			</tr>
+			<tr>
+				<td>详细地址：</td>
+				<td><input class="easyui-textbox" name="addr"><br></td>
+			</tr>
+			<tr>
+				<td>电话：</td>
+				<td><input class="easyui-numberbox" name="phone"><br></td>
+			</tr>
+			<tr>
+				<td>联系人姓名：</td>
+				<td><input class="easyui-textbox" name="name"><br></td>
+			</tr>
+			<tr>
+				<td>是否为默认地址：</td>
+				<td><select class="easyui-combobox" name="dft" style="width:200px"><option value="1">1</option><option value="2">0</option></select><br></td>
+			</tr>
+		</table>
+		</form>
+	</div>
+
+	<div id="bb">
+	<a href="pay.html" class="easyui-linkbutton" onclick="save()">保存</a>
+	<a href="#" class="easyui-linkbutton">关闭</a>
+</div>
+</body>
+</html>

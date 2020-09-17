@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>大麦商城</title>
+<link href="css/common.css" rel="stylesheet" type="text/css">
+<link href="css/cart.css" rel="stylesheet" type="text/css">
+<!-- <script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/common.js"></script> -->
+<script type="text/javascript" src="js/vue.min.js"></script>
+<script type="text/javascript" src="js/axios.min.js"></script>
+<script type="text/javascript" src="js/comp.js"></script>
+
+</head>
+<body>
+<div id="header">
+<page-head></page-head>
+</div>
+<script type="text/javascript">
+ new Vue({
+	el:"#header"
+});
+</script>
+	<div class="container cart">
+		<div class="span24">
+		
+		
+		<div class="step step1">
+				购物车列表
+			</div>
+				<table id="cartList">
+					<tbody><tr>
+						<th>图片</th>
+						<th>商品</th>
+						<th>价格</th>
+						<th>数量</th>
+						<th>小计</th>
+						<th>操作</th>
+					</tr>
+					
+						<tr v-for="c in carts">
+							<td width="60">
+								<img :src="c.image">
+							</td>
+							<td>
+								<a target="_blank">{{c.pname}}</a>
+							</td>
+							<td>
+								￥{{c.shop_price}}
+							</td>
+							<td class="quantity" width="60">
+								{{c.count}}
+							</td>
+							<td width="140">
+								<span class="subtotal">￥{{c.shop_price*c.count}}</span>
+							</td>
+							<td>
+								<a :href="'cart.html?#'+c.id" @click="del(c.id)" class="delete">删除</a>
+							</td>
+						</tr>
+				
+						
+				</tbody>
+				</table>
+ 
+				<dl id="giftItems" class="hidden" style="display: none;">
+				</dl>
+				<div class="total">
+					<em id="promotion"></em>
+							<em>
+								登录后确认是否享有优惠
+							</em>
+					<!-- 赠送积分: <em id="effectivePoint">11017.0</em>
+					商品金额: <strong id="effectivePrice">11017.0</strong> -->
+				</div>
+				<script type="text/javascript">
+   var vue=new Vue({
+	   el:"#cartList",
+	   data:{
+		carts:[],       //查询的分类商品
+	   },
+	   created:function(){
+		   axios.get("cart.do?op=query")
+		   .then(res=>{
+			  this.carts=res.data;
+		   });
+	   },
+	   methods:{
+		    del(id){
+		    	location.reload(); 
+			    axios.get("cart.do?op=del&id="+id).then(res=>{
+				   alert(res.data.msg);
+			   });
+		   } 
+	   }
+   });
+</script>
+				<div class="bottom">
+					<a href="cart.html" id="clear" class="clear">清空购物车</a>
+					<a href="pay.html" id="submit" class="submit" @click="pay">提交订单</a>
+				</div>
+				<script type="text/javascript">
+				var vue=new Vue({
+					el:".bottom",
+					methods:{
+						pay(){
+							 axios.get("orders.do?op=add").then(res=>{
+				                 if(res.data.code){
+				                	 location.href="pay.html";
+				                 }else{
+				                	 alert("新增失败!请联系客服小姐姐");
+				                 }				   
+							   });
+						}
+					}
+				});
+				</script>
+			
+		</div>
+	</div>
+<div id="foot">
+<page-foot></page-foot>
+</div>
+<script type="text/javascript">
+new Vue({
+	el:"#foot"
+});
+</script>
+</body></html>

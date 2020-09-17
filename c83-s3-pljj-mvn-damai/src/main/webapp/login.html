@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>大麦商城</title>
+<link href="css/common.css" rel="stylesheet" type="text/css"/>
+<link href="css/login.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="js/vue.min.js"></script>
+<script  type="text/javascript" src="js/Ajax.js"></script>
+<script  type="text/javascript" src="js/axios.min.js"></script>
+<script  type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/comp.js"></script>
+
+<script type="text/javascript">
+	function checkImg(){
+		// 更新验证码
+	}
+</script>
+</head>
+<body>
+<div id="loginheader">
+<page-head></page-head>
+</div>
+<script type="text/javascript">
+ new Vue({
+	el:"#loginheader"
+});
+</script>
+
+<div class="container login">
+		<div class="span12">
+<div class="ad">
+	<img src="image/login.jpg" width="500" height="330" alt="会员登录" title="会员登录">
+</div>		
+</div>
+		<div id="user" class="span12 last">
+			<div class="wrap">
+				<div class="main">
+					<div class="title">
+						<strong>会员登录</strong>USER LOGIN
+					</div>
+					<div class="title">
+						
+					</div>
+					<form id="loginForm" action="login.html"  method="post" novalidate="novalidate">
+						<table>
+							<tbody><tr>
+								<th>
+										用户名:
+								</th>
+								<td>
+									<input v-model="ename" type="text" id="username" name="eName" class="text" maxlength="20"/><span></span>
+								</td>
+							</tr>
+							<tr>
+								<th>
+									密&nbsp;&nbsp;码:
+								</th>
+								<td>
+									<input v-model="password" type="password" id="password" name="passWord" class="text" maxlength="20" autocomplete="off"/><span></span>
+								</td>
+							</tr>
+								<tr>
+									<th>
+										验证码:
+									</th>
+									<td>
+										<span class="fieldSet">
+											<input v-model="vcode" scr="" type="text" id="captcha" name="captcha" class="text captcha" maxlength="4" autocomplete="off">
+											<img id="captchaImage" class="captchaImage"  src="vcode.do"
+											   onclick="this.src='vcode.do?a='+new Date()" style="height: 25px"  title="点击更换验证码" onclick="checkImg()">
+										</span>
+									</td>
+								</tr>
+							<tr>
+								<th>&nbsp;
+									
+								</th>
+								<td>
+									<label>
+										<input type="checkbox" id="isRememberUsername" name="isRememberUsername" value="true">记住用户名
+									</label>
+									<label>
+										&nbsp;&nbsp;<a >找回密码</a>
+									</label>
+								</td>
+							</tr>
+							<tr>
+								<th>&nbsp;
+									
+								</th>
+								<td>
+									<input @click="login()" type="button" class="submit" value="登 录">
+								</td>
+							</tr>
+							<tr class="register">
+								<th>&nbsp;
+									
+								</th>
+								<td>
+									<dl>
+										<dt>还没有注册账号？</dt>
+										<dd>
+											立即注册即可体验在线购物！
+											<a href="./会员注册.htm">立即注册</a>
+										</dd>
+									</dl>
+								</td>
+							</tr>
+						</tbody></table>
+					</form>
+				</div>
+		
+			</div>
+		</div>
+		
+	</div>
+		<script type="text/javascript">
+ var vue=new Vue({
+	el:"#user",
+	data:{
+		ename:"",
+		password:"",
+		vcode:""
+	},
+	methods:{
+		login(){
+			var url="LoginServlet";
+		    var user={
+		    		ename:this.ename,
+		    		password:this.password,
+		    		vcode:this.vcode,
+		    };
+		   $.post(url,user,function(text){
+			   alert(text);
+			   if(text=="登录成功"){
+					location.href="index.html";
+				}
+		   });
+		}
+	}
+ });
+</script>
+				
+<div id="foot">
+<page-foot></page-foot>
+</div>
+<script type="text/javascript">
+new Vue({
+	el:"#foot"
+});
+</script>
+</body></html>

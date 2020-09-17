@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <!-- namespace是当前接口的命名空间 -->
+<mapper namespace="com.yc.damai.dao.DmOrdersMapper">
+<!-- useGeneratedKeys="true" keyProperty="id" keyColumn="id" 
+     获取数据库的自增值 -->
+<insert id="insert">
+ <selectKey keyProperty="id" keyColumn="id" order="AFTER" resultType="int">
+ <!-- 
+    Oracle没有自增列——》是引用序列解决自动生成主键的问题 假设序列名字是seq_order_id
+    Mysql 有一个last_insert_id()函数可以模拟序列
+  -->
+   select last_insert_id()
+ </selectKey>
+ insert into dm_orders values(null,#{total},now(),#{state},#{uid},#{aid})
+</insert>   
+
+<!-- Oracle -->
+ <!-- <insert id="insert">
+ <selectKey keyProperty="id" keyColumn="id" order="BEFORE">
+ order="BEFORE" 当前的SQL是在insert之前执行还是在之后执行
+ select seq_order_id.nextval from dual
+ </selectKey>
+ insert into dm_orders values(null,#{total},now(),#{state},#{uid},#{aid})
+</insert -->
+
+<!-- Mysql -->
+<!-- useGeneratedKeys="true" keyProperty="id" keyColumn="id" 
+     获取数据库的自增值 -->
+<!--  <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+ insert into dm_orders values(null,#{total},now(),#{state},#{uid},#{aid})
+</insert> -->
+</mapper>

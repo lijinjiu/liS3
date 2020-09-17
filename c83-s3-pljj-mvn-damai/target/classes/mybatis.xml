@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+<!-- 环境配置 -->
+<!-- 数据环境 -->
+<environments default="development">
+  <environment id="development">
+  <!-- 事物管理类型jdbc -->
+    <transactionManager type="JDBC">
+      <property name="..." value="..."/>
+    </transactionManager>
+    <!-- 数据类型连接池 -->
+    <dataSource type="POOLED">
+      <property name="driver" value="com.mysql.jdbc.Driver"/>
+      <property name="url" value="jdbc:mysql://127.0.0.1/c83-s2-pljj-damai"/>
+      <property name="username" value="root"/>
+      <property name="password" value="a"/>
+    </dataSource>
+  </environment>
+  
+</environments>
+ <!-- 映射文件配置 -->
+ <mappers>
+  <mapper resource="com/yc/damai/dao/productMapper.xml"/>
+  <mapper resource="com/yc/damai/dao/categoryMapper.xml"/>
+  <mapper resource="com/yc/damai/dao/orderitemMapper.xml"/>
+  <mapper resource="com/yc/damai/dao/ordersMapper.xml"/>
+</mappers>
+</configuration>
